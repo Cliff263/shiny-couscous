@@ -56,13 +56,13 @@ const Header = () => {
               <button className='text-gray-500 hover:text-gray-900 hidden sm:block' title="Search" type='button'>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" 
                   className="w-6 h-6 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-                <line x1="16" y1="16" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                <line x1="16" y1="16" x2="22" y2="22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
               </button>
               <Link href='/auth/sign-in'>SignIn</Link>
-              <Link href='/auth/sign-out'>SignUp</Link>
-              <button className='text-gray-700 hover:text-gray-900 relative' title="" type='button'>
+              <Link href='/auth/sign-up'>SignUp</Link>
+              <button className='text-gray-700 hover:text-gray-900 relative' title="Cart" type='button'>
                 <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 sm:h-6 sm:w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
                 </svg>
