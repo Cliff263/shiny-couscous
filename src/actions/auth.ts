@@ -165,3 +165,4 @@ export const signOut = async () => {
     }
     await deleteSessionTokenCookie();
 }
+

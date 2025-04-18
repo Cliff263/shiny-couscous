@@ -7,7 +7,7 @@ const AnnouncementBar = () => {
     <div className='w-full bg-black py-2'>
         <div className='container mx-auto flex items-center justify-center px-8'>
             <span className='text-center text-sm font-medium tracking-wide text-white'>
-              FREE SHIPPING ON ORDERS OVER $15.00 ● FREE RETURNS ON ALL ORDERS
+              FREE SHIPPING ON ORDERS OVER $150.00 ● FREE RETURNS ON ALL ORDERS
             </span>
         </div>
     </div>
@@ -51,7 +51,7 @@ const Header = () => {
                 <Link href='/'>Sale</Link>
               </nav>
             </div>
-            <Link href='/'>LOGO</Link>
+            <Link href='/'>DEAL</Link>
             <div className='flex flex-1 justify-end items-center gap-2 sm:gp-2'>
               <button className='text-gray-500 hover:text-gray-900 hidden sm:block' title="Search" type='button'>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" 
