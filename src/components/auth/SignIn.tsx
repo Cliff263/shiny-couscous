@@ -3,24 +3,24 @@ import React, { useActionState } from "react";
 import Form from "next/form";
 import {Loader2} from "lucide-react";  
 
-export type SignUpState = { message: string | undefined }
-type SignUpProps = {
-    action: (prevState: SignUpState, formData: FormData) => Promise<SignUpState>
+export type SignInState = { message: string | undefined }
+type SignInProps = {
+    action: (prevState: SignInState, formData: FormData) => Promise<SignInState>
 }
 
 const initialState = { message: '',}
- const SignUp = ({action}: SignUpProps) => {
+ const SignIn = ({action}: SignInProps) => {
     const [state, formAction, isPending] = useActionState(action,initialState)
     return (
         <Form action={formAction} className="max-w-md mx-auto my-16 p-8 bg-white rounded-lg shadow-md">
             <h1 className="text-2xl font-bold text-center mb-2">
-                Join the DEAL Revolution!
+                Welcome Back!
             </h1>
             <p className="text-center text-sm text-rose-600 font-semibold mb-2">
-                🔥LIMITED TIME OFFER🔥
+                🔥MEMBER EXCLUSIVE🔥
             </p>
             <p className="text-center text-sm text-gray-600 font-semibold mb-2">
-                SignUp now & GET 90% OFF your first Order!
+                SignIn to Access Your Exclusive Memsbership Deals!
             </p>
             <div className="space-y-6">
                 {/* Email */}
@@ -43,8 +43,8 @@ const initialState = { message: '',}
                 </div>
                 {/* Copywriting */}
                 <div className="text-center">
-                    <p className="text-xs text-gray-500 mb-2"> ⚡Only 189 Welcome Packages Remaining!</p>
-                    <p className="text-xs text-gray-500 mb-5"> 🕒 Offer expires in 17:47</p>
+                    <p className="text-xs text-gray-500 mb-2"> ⚡Members save an extra 5% on all Orders!</p>
+                    <p className="text-xs text-gray-500 mb-5"> 🎖️Plus get free shipping on orders over $650</p>
                 </div>
                 {/* Submit Button */}
                 <button type="submit" disabled={isPending} title=""
@@ -53,10 +53,10 @@ const initialState = { message: '',}
                     >{isPending ? (
                         <React.Fragment>
                             <Loader2 className='h-4 w-4 animate-spin' />
-                            CREATING ACCOUNT...
+                            SIGNING IN...
                         </React.Fragment>
                     ) : (
-                        'CREATE ACCOUNT'
+                        'SIGN IN'
                     )}
 
                 </button>
@@ -70,4 +70,4 @@ const initialState = { message: '',}
     )
  }
 
-export default SignUp
+export default SignIn

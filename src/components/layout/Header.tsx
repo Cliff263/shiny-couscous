@@ -84,8 +84,8 @@ const Header = ({user}:HeaderProps) => {
                 </div>
               ):(
                 <React.Fragment>
-                  <Link href='/auth/sign-in'>SignIn</Link>
-                  <Link href='/auth/sign-up'>SignUp</Link>
+                  <Link href='/auth/sign-in' className='text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900'>SignIn</Link>
+                  <Link href='/auth/sign-up' className='text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900'>SignUp</Link>
                 </React.Fragment>
               )}
               <button className='text-gray-700 hover:text-gray-900 relative' title="Cart" type='button'>
