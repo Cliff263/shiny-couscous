@@ -1,6 +1,9 @@
 "use client";
 import Link from 'next/link';
 import React, { useState,useEffect } from 'react';
+import { User } from '@prisma/client';
+import { signOut } from '@/actions/auth';
+import { useRouter } from 'next/navigation';
 
 const AnnouncementBar = () => {
   return (
@@ -13,7 +16,11 @@ const AnnouncementBar = () => {
     </div>
   )
 };
-const Header = () => {
+type HeaderProps = {
+  user:Omit<User, "passwordHash"> | null;
+};
+const Header = ({user}:HeaderProps) => {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
   useEffect(() => {
@@ -51,7 +58,11 @@ const Header = () => {
                 <Link href='/'>Sale</Link>
               </nav>
             </div>
-            <Link href='/'>DEAL</Link>
+            <Link href='#' className='absolute left-1/2 -translate-x-1/2'>
+              <span className='text-xl sm:text-2xl font-bold tracking-tight'>
+                DEAL
+              </span>
+            </Link>
             <div className='flex flex-1 justify-end items-center gap-2 sm:gp-2'>
               <button className='text-gray-500 hover:text-gray-900 hidden sm:block' title="Search" type='button'>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" 
@@ -60,8 +71,23 @@ const Header = () => {
                 <line x1="16" y1="16" x2="22" y2="22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
               </button>
-              <Link href='/auth/sign-in'>SignIn</Link>
-              <Link href='/auth/sign-up'>SignUp</Link>
+              {user ? (
+                <div className='flex items-center gap-2 sm:gap-4'>
+                  <span className='text-sm text-gray-700 hidden md:block'>{user.email}</span>
+                  <Link href= '#'className='text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900'
+                  onClick={async (e) =>{
+                    e.preventDefault();
+                    await signOut();
+                    router.refresh();}}>
+                    SignOut
+                  </Link>
+                </div>
+              ):(
+                <React.Fragment>
+                  <Link href='/auth/sign-in'>SignIn</Link>
+                  <Link href='/auth/sign-up'>SignUp</Link>
+                </React.Fragment>
+              )}
               <button className='text-gray-700 hover:text-gray-900 relative' title="Cart" type='button'>
                 <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 sm:h-6 sm:w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
