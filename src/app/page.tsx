@@ -9,7 +9,7 @@ export default async function Home() {
   return (
     <div>
       <SalesCampaignBanner />
-      <WheelOfFortune/>
+      <WheelOfFortune products={products} winningIndex={0} />
       <section className='container mx-auto py-8'>
         <ProductCard products={products} />
       </section>
