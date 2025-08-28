@@ -1,64 +1,54 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest): NextResponse {
+export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
 
-  // Skip static files, API routes, and _next internals
+  // Skip static files and favicon
   if (
     url.pathname.startsWith("/_next") ||
-    url.pathname.startsWith("/static") ||
-    url.pathname.endsWith(".ico") ||
-    url.pathname.endsWith(".png") ||
-    url.pathname.endsWith(".jpg")
+    url.pathname.startsWith("/favicon") ||
+    url.pathname.startsWith("/public")
   ) {
     return NextResponse.next();
   }
 
-  console.log("[Middleware] Incoming request:", {
-    url: request.url,
-    method: request.method,
-    cookies: Object.keys(request.cookies.getAll() ?? {}),
-    headers: {
-      origin: request.headers.get("origin"),
-      host: request.headers.get("host"),
-    },
-  });
+  // Only handle GET requests for session refresh
+  if (request.method === "GET") {
+    const response = NextResponse.next();
+    const token = request.cookies.get("session")?.value ?? null;
 
-  const response = NextResponse.next();
+    if (token) {
+      response.cookies.set("session", token, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        sameSite: "lax",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      });
+    }
 
-  // Refresh session cookie if it exists
-  const token = request.cookies.get("session")?.value ?? null;
-  if (token !== null) {
-    response.cookies.set("session", token, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
-      sameSite: "lax",
-      httpOnly: true,
-      secure: true, // always secure on Vercel
-    });
+    return response;
   }
 
-  // CSRF Protection (only for non-GET requests)
-  if (request.method && request.method !== "GET") {
-    const originHeader = request.headers.get("origin");
-    const hostHeader = request.headers.get("host");
+  // CSRF protection for non-GET requests
+  const originHeader = request.headers.get("Origin");
+  const hostHeader = request.headers.get("Host");
 
-    if (!originHeader || !hostHeader) {
-      return new NextResponse(null, { status: 403 });
-    }
-
-    let origin: URL;
-    try {
-      origin = new URL(originHeader);
-    } catch {
-      return new NextResponse(null, { status: 403 });
-    }
-
-    if (origin.host !== hostHeader) {
-      return new NextResponse(null, { status: 403 });
-    }
+  if (!originHeader || !hostHeader) {
+    return new NextResponse(null, { status: 403 });
   }
 
-  return response;
+  let origin: URL;
+  try {
+    origin = new URL(originHeader);
+  } catch {
+    return new NextResponse(null, { status: 403 });
+  }
+
+  if (origin.host !== hostHeader) {
+    return new NextResponse(null, { status: 403 });
+  }
+
+  return NextResponse.next();
 }
