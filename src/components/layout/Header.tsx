@@ -4,6 +4,9 @@ import React, { useState,useEffect } from 'react';
 import { User } from '@prisma/client';
 import { signOut } from '@/actions/auth';
 import { useRouter } from 'next/navigation';
+import SearchBar from './Seachbar';
+import { useCartStore } from '@/stores/cart-store';
+import { useShallow } from 'zustand/shallow';
 
 const AnnouncementBar = () => {
   return (
@@ -18,11 +21,18 @@ const AnnouncementBar = () => {
 };
 type HeaderProps = {
   user:Omit<User, "passwordHash"> | null;
+  categorySelector:React.ReactNode;
 };
-const Header = ({user}:HeaderProps) => {
+const Header = ({user,categorySelector}:HeaderProps) => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
+  const { open, getTotalItems } = useCartStore(
+    useShallow((state) => ({
+        open: state.open,
+        getTotalItems: state.getTotalItems
+    }))
+);
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -53,8 +63,7 @@ const Header = ({user}:HeaderProps) => {
                 </svg>
               </button>
               <nav className='hidden md:flex gap-4 lg:gap-6 text-sm font-medium'>
-                <Link href='/'>Shop</Link>
-                <Link href='/'>New Arrivals</Link>
+                {categorySelector}
                 <Link href='/'>Sale</Link>
               </nav>
             </div>
@@ -64,13 +73,7 @@ const Header = ({user}:HeaderProps) => {
               </span>
             </Link>
             <div className='flex flex-1 justify-end items-center gap-2 sm:gp-2'>
-              <button className='text-gray-500 hover:text-gray-900 hidden sm:block' title="Search" type='button'>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" 
-                  className="w-6 h-6 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"/>
-                <line x1="16" y1="16" x2="22" y2="22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-              </button>
+              <SearchBar/>
               {user ? (
                 <div className='flex items-center gap-2 sm:gap-4'>
                   <span className='text-sm text-gray-700 hidden md:block'>{user.email}</span>
@@ -88,11 +91,13 @@ const Header = ({user}:HeaderProps) => {
                   <Link href='/auth/sign-up' className='text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900'>SignUp</Link>
                 </React.Fragment>
               )}
-              <button className='text-gray-700 hover:text-gray-900 relative' title="Cart" type='button'>
+              <button onClick={() => open()} className='text-gray-700 hover:text-gray-900 relative' type='button'>
                 <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 sm:h-6 sm:w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
                 </svg>
-                <span className='absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-medium flex items-center justify-center rounded-full'>0</span>              
+                <span className='absolute -top-1 -right-1 bg-black text-white text-[10px] sm:text-xs w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center'>
+                  {getTotalItems()}
+                </span>
               </button>
             </div>
           </div>

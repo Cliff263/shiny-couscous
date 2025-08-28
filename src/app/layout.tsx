@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import { getCurrentSession } from "@/actions/auth";
+import { SanityLive } from "@/sanity/lib/live";
+import CategorySelector from "@/components/layout/CategorySelector";
+import Cart from "@/components/cart/Cart";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,8 +33,10 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black min-h-[120vh]`}
       >
-        <Header  user={user}/>
+        <Header  user={user} categorySelector={<CategorySelector/>}/>
         {children}
+        <Cart/>
+        <SanityLive/>
       </body>
     </html>
   );
