@@ -5,6 +5,12 @@ import { User } from "@prisma/client";
 import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 
+interface WindowWithUmami extends Window {
+    umami?: {
+        identify: (data: Record<string, unknown>) => void;
+    };
+}
+
 type AnalyticsTrackerProps = {
     user: Partial<User> | null;
 }
@@ -22,14 +28,16 @@ const AnalyticsTracker = ({user}: AnalyticsTrackerProps) => {
         }
 
         try {
-            const anyWindow = window as any;
+            const windowWithUmami = window as WindowWithUmami;
 
-            if(anyWindow.umami) {
-                anyWindow.umami.identify({
+            if(windowWithUmami.umami) {
+                windowWithUmami.umami.identify({
                     cartId,
                 })
             }
-        } catch(e) {}
+        } catch {
+            // Silently handle errors
+        }
     }, [cartId,user]);
 
     useEffect(() => {
@@ -38,14 +46,16 @@ const AnalyticsTracker = ({user}: AnalyticsTrackerProps) => {
         }
 
         try {
-            const anyWindow = window as any;
+            const windowWithUmami = window as WindowWithUmami;
 
-            if(anyWindow.umami) {
-                anyWindow.umami.identify({
+            if(windowWithUmami.umami) {
+                windowWithUmami.umami.identify({
                     email: user.email,
                 })
             }
-        } catch(e) {}
+        } catch {
+            // Silently handle errors
+        }
     }, [user])
 
     return <></>
