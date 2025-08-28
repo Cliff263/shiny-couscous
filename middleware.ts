@@ -62,6 +62,4 @@ export function middleware(request: NextRequest): NextResponse {
   return response;
 }
 
-export const config = {
-  matcher: ["/dashboard/:path*", "/api/:path*"],
-};
+// Removed matcher so middleware runs on all routes
