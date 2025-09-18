@@ -19,20 +19,14 @@ export const getAllProducts = async () => {
     category->{title, slug}
   }`
   const products = await sanityFetch({ 
-    query: query,
-    fetchOptions: {
-      revalidate: 600, // Cache for 10 minutes
-    }
+    query: query
   })
   return products.data as Product[];    
 }
 export const getAllProductCategories = async () => {
   const query = `*[_type == "productCategory"]`
   const productCategories = await sanityFetch({ 
-    query: query,
-    fetchOptions: {
-      revalidate: 600, // Cache for 10 minutes
-    }
+    query: query
   })
   return productCategories.data as ProductCategory[];
 }
@@ -62,10 +56,7 @@ export const getProductById = async (id: string) => {
   const query = `*[_type == "product" && _id == $id][0]`;
   const product = await sanityFetch({ 
     query: query, 
-    params: { id },
-    fetchOptions: {
-      revalidate: 300, // Cache for 5 minutes
-    }
+    params: { id }
   });
   return product.data as Product;
 }
