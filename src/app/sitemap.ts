@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { getAllProducts, getAllProductCategories } from '@/sanity/lib/client'
+import { getAllProducts, getAllProductCategories } from '@/sanity/lib/sitemap-client'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shiny-couscous.vercel.app'

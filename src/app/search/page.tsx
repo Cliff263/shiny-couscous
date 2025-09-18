@@ -1,6 +1,6 @@
 import SalesCampaignBanner from '@/components/layout/SalesCampaignBanner';
 import ProductCard from '@/components/product/ProductCard';
-import { searchProducts } from '@/sanity/lib/client';
+import { searchProducts } from '@/sanity/lib/sitemap-client';
 import React from 'react';
 
 type SearchPageProps = {

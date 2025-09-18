@@ -1,4 +1,4 @@
-import { getAllProductCategories } from '@/sanity/lib/client';
+import { getAllProductCategories } from '@/sanity/lib/sitemap-client';
 import Link from 'next/link';
 import React from 'react'
 

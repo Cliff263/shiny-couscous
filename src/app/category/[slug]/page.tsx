@@ -1,6 +1,6 @@
 import SalesCampaignBanner from '@/components/layout/SalesCampaignBanner';
 import ProductCard from '@/components/product/ProductCard';
-import { getCategoryBySlug, getProductsByCategorySlug } from '@/sanity/lib/client';
+import { getCategoryBySlug, getProductsByCategorySlug } from '@/sanity/lib/sitemap-client';
 import React from 'react';
 
 type CategoryPageProps = {

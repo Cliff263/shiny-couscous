@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import { getCurrentSession } from "@/actions/auth";
-import { SanityLive } from "@/sanity/lib/live";
 import CategorySelector from "@/components/layout/CategorySelector";
 import Cart from "@/components/cart/Cart";
 import { Suspense } from "react";
@@ -156,9 +155,10 @@ export default async function RootLayout({
         <Suspense fallback={null}>
           <Cart />
         </Suspense>
-        <Suspense fallback={null}>
+        {/* Temporarily disabled SanityLive to fix build issues */}
+        {/* <Suspense fallback={null}>
           <SanityLive />
-        </Suspense>
+        </Suspense> */}
       </body>
     </html>
   );

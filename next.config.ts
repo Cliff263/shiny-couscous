@@ -12,8 +12,8 @@ const nextConfig: NextConfig = {
   // Ensure Node.js runtime for Sanity-related routes
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-dialog'],
-    serverComponentsExternalPackages: ['sanity', 'next-sanity'],
   },
+  serverExternalPackages: ['sanity', 'next-sanity'],
   turbopack: {
     rules: {
       '*.svg': {

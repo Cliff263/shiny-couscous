@@ -1,4 +1,4 @@
-import { getAllProducts } from "@/sanity/lib/client";
+import { getAllProducts } from "@/sanity/lib/sitemap-client";
 import ProductCard from "@/components/product/ProductCard";
 import SalesCampaignBanner from "@/components/layout/SalesCampaignBanner";
 import WheelOfFortune from "@/components/layout/WheelOfFortune";
