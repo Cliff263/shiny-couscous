@@ -26,26 +26,26 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const imageUrl = product.image ? urlFor(product.image).width(1200).height(630).url() : '/og-product.jpg';
 
   return {
-    title: `${product.title} | DEAL - Premium E-commerce Store`,
-    description: product.description || `Buy ${product.title} at DEAL. Premium quality with amazing discounts. Free shipping on orders over $150.`,
-    keywords: [product.title, 'deals', 'discounts', 'shopping', 'premium products'],
+    title: `${product.title || 'Product'} | DEAL - Premium E-commerce Store`,
+    description: product.description || `Buy ${product.title || 'this product'} at DEAL. Premium quality with amazing discounts. Free shipping on orders over $150.`,
+    keywords: [product.title || 'product', 'deals', 'discounts', 'shopping', 'premium products'],
     openGraph: {
-      title: `${product.title} | DEAL`,
-      description: product.description || `Buy ${product.title} at DEAL. Premium quality with amazing discounts.`,
+      title: `${product.title || 'Product'} | DEAL`,
+      description: product.description || `Buy ${product.title || 'this product'} at DEAL. Premium quality with amazing discounts.`,
       url: productUrl,
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: product.title,
+          alt: product.title || 'Product',
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${product.title} | DEAL`,
-      description: product.description || `Buy ${product.title} at DEAL. Premium quality with amazing discounts.`,
+      title: `${product.title || 'Product'} | DEAL`,
+      description: product.description || `Buy ${product.title || 'this product'} at DEAL. Premium quality with amazing discounts.`,
       images: [imageUrl],
     },
     alternates: {
@@ -67,8 +67,8 @@ const ProductPage = async ({ params }: { params: Promise<{ id: string }> } ) => 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": product.title,
-    "description": product.description,
+    "name": product.title || 'Product',
+    "description": product.description || 'Premium product from DEAL',
     "image": product.image ? urlFor(product.image).url() : '',
     "brand": {
       "@type": "Brand",
