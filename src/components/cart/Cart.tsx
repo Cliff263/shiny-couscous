@@ -140,7 +140,7 @@ const Cart = () => {
             {/* Backdrop */}
             {isOpen && (
                 <div
-                    className='fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity backdrop-blur-sm'
+                    className='fixed inset-0 bg-white/20 backdrop-blur-md z-50 transition-all duration-300'
                     onClick={close}
                 />
             )}

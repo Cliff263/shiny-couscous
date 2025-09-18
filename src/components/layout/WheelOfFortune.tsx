@@ -68,24 +68,27 @@ const getTextStyle = (): React.CSSProperties => {
     const midAngle = 0;
     const radian = (midAngle * Math.PI);
 
-    const radius = 30; // Reduced from 35
-    const x = Math.cos(radian) * radius - 15; // Adjusted positioning
-    const y = Math.sin(radian) * radius - 5;
+    const radius = 25; // Further reduced for better fit
+    const x = Math.cos(radian) * radius - 12; // Adjusted positioning
+    const y = Math.sin(radian) * radius - 8;
 
     return {
         position: 'absolute',
-        width: '150px', // Reduced from 200px
-        height: '60px', // Reduced from 80px
+        width: '120px', // Reduced for better fit
+        height: '50px', // Reduced for better fit
         wordWrap: 'break-word',
         left: `calc(50% + ${x}%)`,
         top: `calc(50% + ${y}%)`,
         color: 'white',
-        fontSize: '11px', // Reduced from 13px
+        fontSize: '10px', // Slightly smaller for better fit
         fontWeight: 'bold',
-        textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+        textShadow: '2px 2px 4px rgba(0,0,0,0.7)', // Stronger shadow for better readability
         whiteSpace: 'wrap',
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
     };
 }
 
@@ -102,40 +105,51 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
     const [isAdding, setIsAdding] = useState(false);
     
     const handleAddToCart = async () => {
-        if(!cartId) {
-            return;
-        }
         setIsAdding(true);
 
-        const updatedCart = await addWinningItemToCart(cartId, product);
-        localStorage.setItem("has-played-wheel-of-fortune", 'true');
+        try {
+            // If no cartId, create a new cart first
+            let currentCartId = cartId;
+            if (!currentCartId) {
+                const { getOrCreateCart } = await import('@/actions/cart-actions');
+                const newCart = await getOrCreateCart();
+                currentCartId = newCart.id;
+                setStore({ cartId: newCart.id, items: newCart.items });
+            }
 
-        setStore(updatedCart);
-        
-        await new Promise(resolve => setTimeout(resolve, 500));
-        router.refresh();
-        openCart();
-        onClose();
+            const updatedCart = await addWinningItemToCart(currentCartId, product);
+            localStorage.setItem("has-played-wheel-of-fortune", 'true');
 
-        setIsAdding(false);
+            setStore(updatedCart);
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            router.refresh();
+            openCart();
+            onClose();
+        } catch (error) {
+            console.error('Error adding winning item to cart:', error);
+        } finally {
+            setIsAdding(false);
+        }
     }
 
     return (
-        <div className='text-center animate-[slideUp_0.5s_ease-out]'>
+        <div className='text-center animate-[slideUp_0.5s_ease-out] w-[350px] h-[350px] sm:w-[400px] sm:h-[400px] flex items-center justify-center'>
             <div
                 className={`
-                    p-8 rounded-xl bg-white shadow-2xl
+                    p-6 rounded-xl bg-white shadow-2xl
                     backdrop-blur-lg bg-opacity-90
                     border border-white/20
                     transform transition-all duration-500
                     hover:shadow-emerald-500/20 hover:scale-[1.01]
+                    w-full h-full flex flex-col justify-center
                 `}
             >
-                <div className='relative p-4'>
+                <div className='relative p-4 h-full flex flex-col justify-center'>
                     <div className='absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-sky-500/10 animate-pulse rounded-lg' />
                     <h3
                         className={`
-                            text-2xl font-bold text-emerald-600 p-4 mb-8
+                            text-xl font-bold text-emerald-600 p-2 mb-4
                             animate-[pulse_2s_ease-in-out_infinite]
                             [text-shadow:_0_1px_2px_rgb(0_0_0_/_10%)]
                         `}
@@ -143,7 +157,7 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
                         🎉 Congratulations 🎉
                     </h3>
 
-                    <div className='flex flex-col items-center gap-6'>
+                    <div className='flex flex-col items-center gap-4'>
                         {product.image && (
                             <div className='relative group'>
                                 {/* Sparkle Effects */}
@@ -164,11 +178,11 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
                                     {/* Image */}
                                     <div className='relative rounded-lg overflow-hidden border-2 border-yellow-400/50 shadow-[0_0_15px_rgba(234,179,8,0.3)]'>
                                         <Image
-                                            src={urlFor(product.image).width(256).url()}
+                                            src={urlFor(product.image).width(200).url()}
                                             alt={product.title || 'Winning Product!'}
                                             className='object-cover transform transition-all duration-500 group-hover:scale-105'
-                                            width={256}
-                                            height={256}
+                                            width={200}
+                                            height={200}
                                         />
 
                                         <div className='absolute inset-0 bg-gradient-to-tr from-yellow-400/20 to-transparent' />
@@ -181,15 +195,15 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
                             </div>
                         )}
 
-                        <div className='text-center space-y-2'>
-                            <h4 className='text-xl font-bold text-gray-800'>
+                        <div className='text-center space-y-1'>
+                            <h4 className='text-lg font-bold text-gray-800'>
                                 You won:
                             </h4>
-                            <p className='text-lg text-emerald-600 font-semibold'>
+                            <p className='text-base text-emerald-600 font-semibold'>
                                 {product.title}
                             </p>
                             {product.description && (
-                                <p className='text-sm text-muted-foreground'>
+                                <p className='text-xs text-muted-foreground line-clamp-2'>
                                     {product.description}
                                 </p>
                             )}
@@ -201,12 +215,13 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
                     onClick={handleAddToCart}
                     disabled={isAdding}
                     className={`
-                        mt-6 w-full py-4 px-8 rounded-full font-bold
+                        mt-4 w-full py-3 px-6 rounded-full font-bold
                         transition-all duration-300 transform
                         flex items-center justify-center gap-2
                         hover:scale-105 active:scale-95
                         disabled:opacity-50 disabled:cursor-not-allowed
                         bg-gradient-to-r from-emerald-500 to-emerald-600 text-white
+                        text-sm
                     `}
                 >
                     {isAdding ? (
@@ -228,8 +243,8 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
 
 const PriceTag = ({price}: { price: number }) => {
     return (
-        <div className='flex items-center'>
-            <span className='text-white text-base font-extrabold drop-shadow-lg [text-shadow:_-2px_-2px_0_#22c55e,_2px_-2px_0_#22c55e,-2px_2px_0_#22c55e,_2px_2px_0_#22c55e]'>
+        <div className='flex items-center justify-center'>
+            <span className='text-white text-sm font-extrabold drop-shadow-lg [text-shadow:_-2px_-2px_0_#22c55e,_2px_-2px_0_#22c55e,-2px_2px_0_#22c55e,_2px_2px_0_#22c55e]'>
                 ${price.toFixed(2)}
             </span>
         </div>
@@ -296,7 +311,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className='sm:max-w-[600px] p-0'>
+            <DialogContent className='sm:max-w-[700px] p-0'>
                 <DialogTitle>
                     <div className='p-4 text-center relative overflow-hidden'>
                         <div className='absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 animate-pulse' />
@@ -310,10 +325,10 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
                     </div>
                 </DialogTitle>
 
-                <div className='flex flex-col items-center justify-center p-4 gap-4 bg-gray-50'>
+                <div className='flex flex-col items-center justify-center p-6 gap-6 bg-gray-50'>
                     <div 
                         className={`
-                            relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] transition-all duration-1000 ease-in-out transform
+                            relative w-[350px] h-[350px] sm:w-[400px] sm:h-[400px] transition-all duration-1000 ease-in-out transform
                             ${showWinningItem ? 'scale-0 opacity-0 rotate-180' : 'scale-100 opacity-100'}
                         `}
                     >
@@ -321,18 +336,19 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
                         <div 
                             className={`
                                 absolute top-1/2 right-0 -translate-y-1/2 translate-x-1 w-0 h-0
-                                border-t-[15px] border-t-transparent
-                                border-r-[30px] border-r-red-600
-                                border-b-[15px] border-b-transparent
+                                border-t-[20px] border-t-transparent
+                                border-r-[40px] border-r-red-600
+                                border-b-[20px] border-b-transparent
                                 z-20
+                                drop-shadow-lg
                             `}
                         />
 
                         {/* Wheel */}
                         <div
                             className={`
-                                absolute inset-0 rounded-full overflow-hidden border-6 border-gray-200
-                                shadow-[0_0_15px_rgba(0,0,0, 0.2)]
+                                absolute inset-0 rounded-full overflow-hidden border-8 border-gray-200
+                                shadow-[0_0_20px_rgba(0,0,0, 0.3)]
                                 ${!isSpinning && !hasSpun && 'animate-[float_3s_ease-in-out_infinite]'}
                             `}
 
@@ -351,7 +367,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
                                         style={getTextStyle()}
                                         className='truncate px-1'
                                     >
-                                        <span className='truncate text-xs'>
+                                        <span className='truncate text-xs leading-tight'>
                                             {product.title}
                                         </span>
                                         <PriceTag
@@ -365,7 +381,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
 
                     <div
                         className={`
-                            absolute inset-0 flex items-center justify-center p-4
+                            absolute inset-0 flex items-center justify-center p-6
                             transition-all duration-1000 ease-in-out transform
                             ${!showWinningItem ? 'scale-0 opacity-0 translate-y-full' : 'scale-100 opacity-100 translate-y-0'}
                         `}
@@ -382,12 +398,12 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
                         onClick={handleSpin}
                         disabled={isSpinning || hasSpun}
                         className={`
-                            relative px-6 py-3 rounded-full font-bold text-white text-base transition-all
+                            relative px-8 py-4 rounded-full font-bold text-white text-lg transition-all
                             bg-gradient-to-r from-red-500 via-yellow-500 to-red-500
                             bg-[length:200%_100%] animate-[gradient-x_2s_linear_infinite]
-                            border-3 border-yellow-300
-                            shadow-[0_0_15px_rgba(234,179,8,0.5)]
-                            hover:shadow-[0_0_25px_rgba(234,179,8,0.8)]
+                            border-4 border-yellow-300
+                            shadow-[0_0_20px_rgba(234,179,8,0.6)]
+                            hover:shadow-[0_0_30px_rgba(234,179,8,0.9)]
                             hover:scale-105
                             disabled:opacity-50 disabled:cursor-not-allowed
                             ${showWinningItem ? 'opacity-0 scale-0 -translate-y-full' : ''}

@@ -1,7 +1,8 @@
 "use client"
 import React, { useActionState } from "react";
 import Form from "next/form";
-import {Loader2} from "lucide-react";  
+import {Loader2} from "lucide-react";
+import Link from "next/link";  
 
 export type SignUpState = { message: string | undefined }
 type SignUpProps = {
@@ -12,16 +13,20 @@ const initialState = { message: '',}
  const SignUp = ({action}: SignUpProps) => {
     const [state, formAction, isPending] = useActionState(action,initialState)
     return (
-        <Form action={formAction} className="max-w-md mx-auto my-16 p-8 bg-white rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold text-center mb-2">
-                Join the DEAL Revolution!
-            </h1>
-            <p className="text-center text-sm text-rose-600 font-semibold mb-2">
-                🔥LIMITED TIME OFFER🔥
-            </p>
-            <p className="text-center text-sm text-gray-600 font-semibold mb-2">
-                SignUp now & GET 90% OFF your first Order!
-            </p>
+        <Form action={formAction} className="max-w-md mx-auto my-16 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+            <div className="text-center mb-6">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent mb-3">
+                    Join the DEAL Revolution!
+                </h1>
+                <p className="text-center text-sm text-emerald-600 font-semibold mb-2 flex items-center justify-center gap-2">
+                    <span className="animate-pulse">🔥</span>
+                    LIMITED TIME OFFER
+                    <span className="animate-pulse">🔥</span>
+                </p>
+                <p className="text-center text-sm text-gray-600 font-medium">
+                    Sign up now & get 90% off your first order!
+                </p>
+            </div>
             <div className="space-y-6">
                 {/* Email */}
                 <div className="space-y-2">
@@ -48,11 +53,11 @@ const initialState = { message: '',}
                 </div>
                 {/* Submit Button */}
                 <button type="submit" disabled={isPending} title=""
-                    className={`w-full bg-rose-600 text-white py-3 rounded-md hover:bg-rose-750 transition-colors font-medium flex items-center justify-center gap-2
-                    ${isPending ? 'cursor-not-allowed' : ''}`}
+                    className={`w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105
+                    ${isPending ? 'cursor-not-allowed opacity-75' : ''}`}
                     >{isPending ? (
                         <React.Fragment>
-                            <Loader2 className='h-4 w-4 animate-spin' />
+                            <Loader2 className='h-5 w-5 animate-spin' />
                             CREATING ACCOUNT...
                         </React.Fragment>
                     ) : (
@@ -65,6 +70,19 @@ const initialState = { message: '',}
                         {state.message}
                     </p>
                 )}
+                
+                {/* Navigation to Sign In */}
+                <div className="text-center pt-6 border-t border-gray-200">
+                    <p className="text-sm text-gray-600 mb-3">
+                        Already have an account?
+                    </p>
+                    <Link 
+                        href="/auth/sign-in"
+                        className="text-emerald-600 hover:text-emerald-700 font-semibold text-sm transition-colors hover:underline"
+                    >
+                        Sign In
+                    </Link>
+                </div>
             </div>
         </Form>
     )

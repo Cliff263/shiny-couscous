@@ -10,13 +10,26 @@ export const client = createClient({
   useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
 })
 export const getAllProducts = async () => {
-  const query = `*[_type == "product"]`
-  const products = await sanityFetch({ query: query })
+  const query = `*[_type == "product"] | order(_createdAt desc) [0...24] {
+    _id,
+    title,
+    price,
+    image,
+    description,
+    category->{title, slug}
+  }`
+  const products = await sanityFetch({ 
+    query: query,
+    revalidate: 600, // Cache for 10 minutes
+  })
   return products.data as Product[];    
 }
 export const getAllProductCategories = async () => {
   const query = `*[_type == "productCategory"]`
-  const productCategories = await sanityFetch({ query: query })
+  const productCategories = await sanityFetch({ 
+    query: query,
+    revalidate: 600, // Cache for 10 minutes
+  })
   return productCategories.data as ProductCategory[];
 }
 export const getAllPromotionCampaigns = async () => {
@@ -43,7 +56,11 @@ export const getProductsByCategorySlug = async (slug: string) => {
 
 export const getProductById = async (id: string) => {
   const query = `*[_type == "product" && _id == $id][0]`;
-  const product = await sanityFetch({ query: query, params: { id } });
+  const product = await sanityFetch({ 
+    query: query, 
+    params: { id },
+    revalidate: 300, // Cache for 5 minutes
+  });
   return product.data as Product;
 }
 

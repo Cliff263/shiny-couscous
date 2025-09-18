@@ -173,7 +173,7 @@ export const syncCartWithUser = async (cartId: string | null) => {
         return existingUserCart;
     }
     for(const item of existingAnonymousCart.items) {
-        const existingItem = existingUserCart.items.find((item) => item.sanityProductId === item.sanityProductId);
+        const existingItem = existingUserCart.items.find((existingItem) => existingItem.sanityProductId === item.sanityProductId);
         if(existingItem) {
             // add two cart quantities together
             await prisma.cartLineItem.update({

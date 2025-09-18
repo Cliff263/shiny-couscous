@@ -135,6 +135,11 @@ export const useCartStore = create<CartStore>()(
         {
             name: 'cart-storage',
             skipHydration: true,
+            partialize: (state) => ({ 
+                cartId: state.cartId, 
+                items: state.items,
+                isLoaded: state.isLoaded 
+            }),
         }
     )
 );

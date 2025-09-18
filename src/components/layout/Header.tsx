@@ -7,12 +7,14 @@ import { useRouter } from 'next/navigation';
 import SearchBar from './Seachbar';
 import { useCartStore } from '@/stores/cart-store';
 import { useShallow } from 'zustand/shallow';
+import { ShoppingBag, User as UserIcon, LogOut, LogIn, UserPlus, Menu } from 'lucide-react';
 
 const AnnouncementBar = () => {
   return (
-    <div className='w-full bg-black py-2'>
+    <div className='w-full bg-gradient-to-r from-emerald-600 to-emerald-700 py-2'>
         <div className='container mx-auto flex items-center justify-center px-8'>
-            <span className='text-center text-sm font-medium tracking-wide text-white'>
+            <span className='text-center text-sm font-medium tracking-wide text-white flex items-center gap-2'>
+              <span className='animate-pulse'>🚚</span>
               FREE SHIPPING ON ORDERS OVER $150.00 ● FREE RETURNS ON ALL ORDERS
             </span>
         </div>
@@ -57,18 +59,18 @@ const Header = ({user,categorySelector}:HeaderProps) => {
         <div className='w-full flex items-center justify-between py-3 bg-white/80 shadow-sm border-b border-gray-100 backdrop-blur-sm'>
           <div className='container mx-auto flex items-center justify-between px-8'>
             <div className="flex flex-1 items-center justify-start gap-4 sm:gap-6">
-              <button className='text-gray-500 hover:text-gray-900 md:hidden' title="Menu" type='button'>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
+              <button className='text-gray-500 hover:text-gray-900 md:hidden transition-colors' title="Menu" type='button'>
+                <Menu className="h-5 w-5" />
               </button>
               <nav className='hidden md:flex gap-4 lg:gap-6 text-sm font-medium'>
                 {categorySelector}
-                <Link href='/'>Sale</Link>
+                <Link href='/' className='text-gray-700 hover:text-emerald-600 transition-colors font-semibold'>
+                  Sale
+                </Link>
               </nav>
             </div>
-            <Link href='#' className='absolute left-1/2 -translate-x-1/2'>
-              <span className='text-xl sm:text-2xl font-bold tracking-tight'>
+            <Link href='/' className='absolute left-1/2 -translate-x-1/2 group'>
+              <span className='text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent group-hover:from-emerald-700 group-hover:to-emerald-800 transition-all duration-300'>
                 DEAL
               </span>
             </Link>
@@ -76,26 +78,46 @@ const Header = ({user,categorySelector}:HeaderProps) => {
               <SearchBar/>
               {user ? (
                 <div className='flex items-center gap-2 sm:gap-4'>
-                  <span className='text-sm text-gray-700 hidden md:block'>{user.email}</span>
-                  <Link href= '#'className='text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900'
-                  onClick={async (e) =>{
-                    e.preventDefault();
-                    await signOut();
-                    router.refresh();}}>
-                    SignOut
-                  </Link>
+                  <div className='flex items-center gap-2 text-sm text-gray-700 hidden md:flex'>
+                    <UserIcon className='h-4 w-4' />
+                    <span className='truncate max-w-32'>{user.email}</span>
+                  </div>
+                  <button 
+                    onClick={async () => {
+                      await signOut();
+                      router.refresh();
+                    }}
+                    className='flex items-center gap-1 text-xs sm:text-sm font-medium text-gray-700 hover:text-red-600 transition-colors group'
+                  >
+                    <LogOut className='h-4 w-4 group-hover:scale-110 transition-transform' />
+                    <span className='hidden sm:inline'>Sign Out</span>
+                  </button>
                 </div>
               ):(
-                <React.Fragment>
-                  <Link href='/auth/sign-in' className='text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900'>SignIn</Link>
-                  <Link href='/auth/sign-up' className='text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900'>SignUp</Link>
-                </React.Fragment>
+                <div className='flex items-center gap-2 sm:gap-3'>
+                  <Link 
+                    href='/auth/sign-in' 
+                    className='flex items-center gap-1 text-xs sm:text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors group'
+                  >
+                    <LogIn className='h-4 w-4 group-hover:scale-110 transition-transform' />
+                    <span className='hidden sm:inline'>Sign In</span>
+                  </Link>
+                  <Link 
+                    href='/auth/sign-up' 
+                    className='flex items-center gap-1 text-xs sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-full transition-colors group'
+                  >
+                    <UserPlus className='h-4 w-4 group-hover:scale-110 transition-transform' />
+                    <span className='hidden sm:inline'>Sign Up</span>
+                  </Link>
+                </div>
               )}
-              <button onClick={() => open()} className='text-gray-700 hover:text-gray-900 relative' type='button'>
-                <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 sm:h-6 sm:w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
-                </svg>
-                <span className='absolute -top-1 -right-1 bg-black text-white text-[10px] sm:text-xs w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center'>
+              <button 
+                onClick={() => open()} 
+                className='text-gray-700 hover:text-emerald-600 relative transition-colors group' 
+                type='button'
+              >
+                <ShoppingBag className='h-5 w-5 sm:h-6 sm:w-6 group-hover:scale-110 transition-transform' />
+                <span className='absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] sm:text-xs w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-semibold shadow-lg'>
                   {getTotalItems()}
                 </span>
               </button>
