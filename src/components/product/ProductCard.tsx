@@ -1,4 +1,4 @@
-import ProductItem from '@/components/product/ProductItem';
+import LazyProductItem from '@/components/product/LazyProductItem';
 import { Product } from '@/sanity.types';
 import React from 'react'
 
@@ -9,7 +9,7 @@ const ProductGrid = ({ products }: ProductGridProps) => {
   return (
     <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
         {products.map((product) => (
-            <ProductItem
+            <LazyProductItem
                 key={product._id}
                 product={product}
             />

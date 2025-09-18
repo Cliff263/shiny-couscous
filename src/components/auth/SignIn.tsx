@@ -74,7 +74,7 @@ const initialState = { message: '',}
                 {/* Navigation to Sign Up */}
                 <div className="text-center pt-6 border-t border-gray-200">
                     <p className="text-sm text-gray-600 mb-3">
-                        Don't have an account?
+                        Don&apos;t have an account?
                     </p>
                     <Link 
                         href="/auth/sign-up"

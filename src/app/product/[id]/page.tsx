@@ -6,17 +6,110 @@ import { urlFor } from '@/sanity/lib/image';
 import { Home, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React from 'react';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProductById(id);
+  
+  if (!product) {
+    return {
+      title: 'Product Not Found',
+    };
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shiny-couscous.vercel.app';
+  const productUrl = `${baseUrl}/product/${id}`;
+  const imageUrl = product.image ? urlFor(product.image).width(1200).height(630).url() : '/og-product.jpg';
+
+  return {
+    title: `${product.title} | DEAL - Premium E-commerce Store`,
+    description: product.description || `Buy ${product.title} at DEAL. Premium quality with amazing discounts. Free shipping on orders over $150.`,
+    keywords: [product.title, 'deals', 'discounts', 'shopping', 'premium products'],
+    openGraph: {
+      title: `${product.title} | DEAL`,
+      description: product.description || `Buy ${product.title} at DEAL. Premium quality with amazing discounts.`,
+      url: productUrl,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: product.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.title} | DEAL`,
+      description: product.description || `Buy ${product.title} at DEAL. Premium quality with amazing discounts.`,
+      images: [imageUrl],
+    },
+    alternates: {
+      canonical: productUrl,
+    },
+  };
+}
 
 const ProductPage = async ({ params }: { params: Promise<{ id: string }> } ) => {
     const { id } = await params;
     const product = await getProductById(id);
-    if(!product.price) {
-        return <div>Product not found</div>;
+    
+    if (!product || !product.price) {
+        notFound();
     }
+    
     const originalPrice = product.price * 5;
+  // Structured data for product
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.title,
+    "description": product.description,
+    "image": product.image ? urlFor(product.image).url() : '',
+    "brand": {
+      "@type": "Brand",
+      "name": "DEAL"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": product.price,
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "DEAL"
+      },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "USD"
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "businessDays": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+          }
+        }
+      }
+    }
+  };
+
   return (
-    <div className='bg-gray-50'>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+      <div className='bg-gray-50'>
         <SalesCampaignBanner />
         {/* Breadcrumb Navigation */}
         <div className='bg-white border-b border-gray-200'>
@@ -157,7 +250,8 @@ const ProductPage = async ({ params }: { params: Promise<{ id: string }> } ) => 
                 </div>
             </div>
         </div>
-    </div>
+      </div>
+    </>
   )
 }
 
