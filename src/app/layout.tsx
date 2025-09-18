@@ -9,6 +9,9 @@ import Cart from "@/components/cart/Cart";
 import { Suspense } from "react";
 import Script from "next/script";
 
+// Ensure this layout uses Node.js runtime
+export const runtime = 'nodejs';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
