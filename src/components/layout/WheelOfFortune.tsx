@@ -151,7 +151,7 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
                         className={`
                             text-xl font-bold text-emerald-600 p-2 mb-4
                             animate-[pulse_2s_ease-in-out_infinite]
-                            [text-shadow:_0_1px_2px_rgb(0_0_0_/_10%)]
+                            [text-shadow:0_1px_2px_rgb(0_0_0_/_10%)]
                         `}
                     >
                         🎉 Congratulations 🎉
@@ -244,7 +244,7 @@ const WinningItem = ({ product, onClose }: {product: Product, onClose: () => voi
 const PriceTag = ({price}: { price: number }) => {
     return (
         <div className='flex items-center justify-center'>
-            <span className='text-white text-sm font-extrabold drop-shadow-lg [text-shadow:_-2px_-2px_0_#22c55e,_2px_-2px_0_#22c55e,-2px_2px_0_#22c55e,_2px_2px_0_#22c55e]'>
+            <span className='text-white text-sm font-extrabold drop-shadow-lg' style={{textShadow: '-2px -2px 0 #22c55e, 2px -2px 0 #22c55e, -2px 2px 0 #22c55e, 2px 2px 0 #22c55e'}}>
                 ${price.toFixed(2)}
             </span>
         </div>
